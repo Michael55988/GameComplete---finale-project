@@ -1,55 +1,91 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import api from '../api';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
+import { useToast } from "../components/ToastContainer";
+import Spinner from "../components/Spinner";
 
 function Login({ setUser }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    if (savedEmail) setEmail(savedEmail);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
 
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post("/auth/login", {
+        email,
+        password,
+        rememberMe,
+      });
+
       const { token, user } = res.data;
-      localStorage.setItem('gc_token', token);
+
+      if (rememberMe) {
+        localStorage.setItem("gc_token", token);
+        localStorage.setItem("savedEmail", email);
+      } else {
+        sessionStorage.setItem("gc_token", token);
+        localStorage.removeItem("savedEmail");
+      }
+
+      showToast("Welcome back!", "success");
       setUser(user);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      console.log('LOGIN ERROR:', err.response?.data || err.message);
-      setError(err.response?.data?.error || 'Login failed');
+      console.error(err);
+      showToast(err.response?.data?.message || "Erreur de connexion.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="gc-card">
-      <h2>Login</h2>
-      {error && <p className="gc-error">{error}</p>}
+    <div className="auth-container">
+      <h2>Connexion</h2>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <label>
+          Email
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </label>
 
-      <form onSubmit={handleSubmit}>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <label>
+          Password
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </label>
 
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <label className="remember-me">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          Remember me
+        </label>
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <><Spinner size="small" /> Connecting...</> : "Connect"}
+        </button>
       </form>
-
-      <p>
-        No account? <Link to="/register">Register</Link>
-      </p>
     </div>
   );
 }

@@ -1,1 +1,21 @@
 .DS_Store
+
+# Backend
+gamecomplete-backend/node_modules/
+gamecomplete-backend/.env
+gamecomplete-backend/gamecomplete.db
+gamecomplete-backend/uploads/*.jpg
+gamecomplete-backend/uploads/*.jpeg
+gamecomplete-backend/uploads/*.png
+gamecomplete-backend/uploads/*.gif
+!gamecomplete-backend/uploads/.gitkeep
+
+# Frontend
+gamecomplete-frontend/node_modules/
+gamecomplete-frontend/dist/
+gamecomplete-frontend/.env.local
+
+# Logs
+*.log
+npm-debug.log*
+

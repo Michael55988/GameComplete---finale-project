@@ -16,14 +16,15 @@ const db = new sqlite3.Database(dbPath, (err) => {
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    firstname TEXT,
-    lastname TEXT,
+    name TEXT,
     email TEXT UNIQUE,
+    phone TEXT,
     password TEXT,
     age INTEGER,
     position TEXT,
     level INTEGER,
-    location TEXT
+    location TEXT,
+    avatar_url TEXT
   )`);
 
   db.run(`CREATE TABLE IF NOT EXISTS matches (
@@ -42,6 +43,8 @@ db.serialize(() => {
     match_id INTEGER,
     user_id INTEGER,
     status TEXT,
+    team TEXT,
+    position TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   )`);
 

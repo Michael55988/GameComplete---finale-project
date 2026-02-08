@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { useToast } from '../components/ToastContainer';
+import Spinner from '../components/Spinner';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 function CreateMatch() {
   const [title, setTitle] = useState('');
@@ -9,12 +12,13 @@ function CreateMatch() {
   const [time, setTime] = useState('');
   const [maxPlayers, setMaxPlayers] = useState('');
   const [description, setDescription] = useState('');
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
 
     try {
       const res = await api.post('/matches', {
@@ -26,17 +30,25 @@ function CreateMatch() {
         description,
       });
 
+      showToast('Match created successfully!', 'success');
       navigate(`/matches/${res.data.id}`);
     } catch (err) {
       console.log('CREATE MATCH ERROR:', err.response?.data || err.message);
-      setError(err.response?.data?.error || 'Could not create match');
+      showToast(err.response?.data?.error || 'Could not create match', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const breadcrumbs = [
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/create-match', label: 'Create Match' },
+  ];
+
   return (
     <div className="gc-card">
+      <Breadcrumbs items={breadcrumbs} />
       <h2>Create a game</h2>
-      {error && <p className="gc-error">{error}</p>}
 
       <form onSubmit={handleSubmit}>
         <label>Title</label>
@@ -66,7 +78,9 @@ function CreateMatch() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <button type="submit">Create match</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <><Spinner size="small" /> Creating...</> : 'Create match'}
+        </button>
       </form>
     </div>
   );

@@ -8,6 +8,12 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: radial-gradient(circle at top, #0b3d02 0, #052005 35%, #020a14 100%);
   color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 /* Layout général */
@@ -65,6 +71,18 @@ body {
   border: 2px solid rgba(255, 255, 255, 0.14);
   position: relative;
   overflow: hidden;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* lignes blanches style terrain */
@@ -186,6 +204,14 @@ button:hover,
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.25);
   font-size: 13px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gc-match:hover {
+  transform: translateY(-2px);
+  border-color: rgba(51, 255, 153, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .gc-match-header {
@@ -216,6 +242,282 @@ button:hover,
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.gc-player-row {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .gc-player-row:last-child {
   border-bottom: none;
+}
+
+/* Dashboard Controls */
+.gc-dashboard-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.gc-search-box {
+  width: 100%;
+}
+
+.gc-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.3);
+  color: #f5f5f5;
+  font-size: 14px;
+}
+
+.gc-search-input:focus {
+  outline: none;
+  border-color: #33ff99;
+  box-shadow: 0 0 0 2px rgba(51, 255, 153, 0.3);
+}
+
+.gc-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gc-filter-select {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.3);
+  color: #f5f5f5;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.gc-filter-select:focus {
+  outline: none;
+  border-color: #33ff99;
+  box-shadow: 0 0 0 1px rgba(51, 255, 153, 0.3);
+}
+
+/* Status Badges */
+.gc-status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.gc-status-open {
+  background: rgba(51, 255, 153, 0.2);
+  border: 1px solid #33ff99;
+  color: #33ff99;
+}
+
+.gc-status-full {
+  background: rgba(255, 107, 107, 0.2);
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+}
+
+.gc-status-warning {
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid #ffc107;
+  color: #ffc107;
+}
+
+.gc-status-accepted {
+  background: rgba(51, 255, 153, 0.2);
+  border: 1px solid #33ff99;
+  color: #33ff99;
+}
+
+.gc-status-pending {
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid #ffc107;
+  color: #ffc107;
+}
+
+.gc-status-rejected {
+  background: rgba(255, 107, 107, 0.2);
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+}
+
+/* Progress Bar */
+.gc-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.gc-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #33ff99, #16a34a);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* Button disabled state */
+button:disabled,
+.gc-btn-primary:disabled,
+.gc-btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:disabled:hover,
+.gc-btn-primary:disabled:hover,
+.gc-btn-secondary:disabled:hover {
+  filter: none;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+button:disabled:hover,
+.gc-btn-primary:disabled:hover,
+.gc-btn-secondary:disabled:hover {
+  filter: none;
+}
+
+/* Toast Container */
+.gc-toast-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.gc-toast-container > * {
+  pointer-events: auto;
+}
+
+/* Match header improvements */
+.gc-match-header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Auth success message */
+.auth-success {
+  color: #33ff99;
+  margin-bottom: 10px;
+  font-size: 13px;
+  padding: 8px;
+  background: rgba(51, 255, 153, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(51, 255, 153, 0.3);
+}
+
+.auth-container {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 13px;
+  gap: 4px;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .gc-main {
+    padding: 20px 12px;
+  }
+
+  .gc-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .gc-card h2 {
+    font-size: 20px;
+  }
+
+  .gc-dashboard-controls {
+    flex-direction: column;
+  }
+
+  .gc-filters {
+    flex-direction: column;
+  }
+
+  .gc-filter-select {
+    width: 100%;
+  }
+
+  .gc-match-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .gc-player-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gc-card {
+    padding: 16px 12px;
+  }
+
+  .gc-profile-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .gc-stat-card {
+    padding: 12px;
+  }
+
+  .gc-stat-value {
+    font-size: 24px;
+  }
 }

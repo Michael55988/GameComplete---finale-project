@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: gamecomplete-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_FILE
+        value: /opt/render/project/src/gamecomplete.db
+      - key: FRONTEND_URL
+        sync: false
+    disk:
+      name: gamecomplete-data
+      mountPath: /opt/render/project/src
+      sizeGB: 1
